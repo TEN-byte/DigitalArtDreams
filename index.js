@@ -1,5 +1,5 @@
-/*the first step is how to make particles and activate with a button in html
-I mean hide all the THREEjs Stuff before a mouseEvent.
+/*The first step is how to activate the points with a button or text data in html
+I mean, hide all the THREEjs Stuff before a mouseEvent or a submit action.
 */
 
 //Init the scene
@@ -14,16 +14,24 @@ document.body.appendChild( renderer.domElement);
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
 scene.add( directionalLight );
 
-//play with the canvas
+//the audio interface go here
 
-const geometry = new THREE.CircleGeometry( 5, 32 );
-const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-const circle = new THREE.Mesh( geometry, material );
-scene.add( circle );
+//play with the canvas
+const vertices = [];
+for (let i = 0; i < 1000; i++){
+  const x = THREE.MathUtils.randFloatSpread(400);
+  const y = THREE.MathUtils.randFloatSpread(400);
+  const z = THREE.MathUtils.randFloatSpread(400);
+  vertices.push(x, y, z);
+}
+const geometry = new THREE.BufferGeometry();
+geometry.setAttribute('position', new
+THREE.Float32BufferAttribute(vertices, 3));
+const material = new THREE.PointsMaterial({color: 0x888888});
+const points = new THREE.Points(geometry, material);
+scene.add(points);
 
 camera.position.z = 15;
-
-
 
 //render the camera
 function animate (){
@@ -31,10 +39,9 @@ function animate (){
 
     //animate the stuff
 
-    circle.rotation.x += 0.01;
-    circle.rotation.y += 0.01;
+    points.rotation.x += 0.01;
+    points.rotation.y += 0.01;
 
     renderer.render( scene, camera );
 };
 animate();
-
