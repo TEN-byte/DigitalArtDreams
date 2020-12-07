@@ -5,8 +5,15 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    
-      <!--This is my call function to the JS script-->
+  <!--This is our source-->
+  <audio src="Data/Ambient.mp3"></audio>
+  <button data-playing="false" role="switch" aria-checked="false">
+    <span>Play/Pause</span>
+  </button>
+  <!--This is our range of volume or gain-->
+  <input type="range" id="volume" min="0" max="2" value="1" step="0.01">
+  <!--This our range of panning function (need to be fixed)-->
+  <input type="range" id="panner" min="-1" max="1" value="0" step="0.01">
     <script src="build/three.js"></script>
     <script src="index.js"></script>
 

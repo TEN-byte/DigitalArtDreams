@@ -14,7 +14,52 @@ document.body.appendChild( renderer.domElement);
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
 scene.add( directionalLight );
 
-//the audio interface go here
+//start the audio interface
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioContext = new AudioContext();
+
+//get the audio element
+const audioElement = document.querySelector('audio');
+const track = audioContext.createMediaElementSource(audioElement);
+//connect the nodes to the BaseAudioContext.destination
+track.connect(audioContext.destination);
+//select the play button 
+const playButton = document.querySelector('button');
+playButton.addEventListener('click', function(){
+  //check if the context is in suspended state, because the Autoplay policy 
+  if (audioContext.state === 'suspended'){
+    audioContext.resume();
+  }
+  //play or pause the track
+  if (this.dataset.playing === 'false'){
+    audioElement.play();
+    this.dataset.playing = 'true';
+  } else if (this.dataset.playing === 'true'){
+    audioElement.pause();
+    this.dataset.playing = 'false';
+  }
+}, false);
+//The HTMLMediaElement fires an ended event once it's finished playing
+audioElement.addEventListener('ended', () => {
+  playButton.dataset.playing = 'false';
+}, false);
+//Modifying sound
+const gainNode = audioContext.createGain();
+track.connect(gainNode).connect(audioContext.destination);
+const volumeControl = document.querySelector('#volume');
+volumeControl.addEventListener('input', function (){
+  gainNode.gain.value = this.value;
+}, false);
+//add a stereo panning (need to be fixed)
+const pannerOptions = { pan: 0 };
+const panner = new StereoPannerNode(audioContext, pannerOptions);
+//Using the values from the setup in the HTML
+const pannerControl = document.querySelector('#panner');
+pannerControl.addEventListener('input', function(){
+  panner.pan.value = this.value;
+}, false);
+//adjust the audio graph gain
+track.connect(gainNode).connect(panner).connect(audioContext.destination);
 
 //play with the canvas
 const vertices = [];
