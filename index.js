@@ -3,16 +3,27 @@ I mean, hide all the THREEjs Stuff before a mouseEvent or a submit action.
 */
 
 //Init the scene
+
 const scene = new THREE.Scene();
+{
+  const color = 0xff44af;
+  const near = 10;
+  const far = 250;
+  scene.background = new THREE.Color(0x0a0317);
+  scene.fog = new THREE.Fog(color, near, far);
+ 
+}
+
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight);
 document.body.appendChild( renderer.domElement);
-
 //add some lights
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+const directionalLight = new THREE.DirectionalLight( 0xf0caf0, 0.5 );
 scene.add( directionalLight );
+const light = new THREE.HemisphereLight(0x6289FF, 0x08020, 1);
+scene.add(light);
 
 //start the audio interface
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -39,6 +50,7 @@ playButton.addEventListener('click', function(){
     this.dataset.playing = 'false';
   }
 }, false);
+
 //The HTMLMediaElement fires an ended event once it's finished playing
 audioElement.addEventListener('ended', () => {
   playButton.dataset.playing = 'false';
@@ -50,7 +62,7 @@ const volumeControl = document.querySelector('#volume');
 volumeControl.addEventListener('input', function (){
   gainNode.gain.value = this.value;
 }, false);
-//add a stereo panning (need to be fixed)
+//add a stereo panning
 const pannerOptions = { pan: 0 };
 const panner = new StereoPannerNode(audioContext, pannerOptions);
 //Using the values from the setup in the HTML
@@ -61,7 +73,7 @@ pannerControl.addEventListener('input', function(){
 //adjust the audio graph gain
 track.connect(gainNode).connect(panner).connect(audioContext.destination);
 
-//play with the canvas
+//play with the canvas 
 const vertices = [];
 for (let i = 0; i < 1000; i++){
   const x = THREE.MathUtils.randFloatSpread(400);
@@ -72,18 +84,17 @@ for (let i = 0; i < 1000; i++){
 const geometry = new THREE.BufferGeometry();
 geometry.setAttribute('position', new
 THREE.Float32BufferAttribute(vertices, 3));
-const material = new THREE.PointsMaterial({color: 0x888888});
+const material = new THREE.PointsMaterial({color: 0x48e5c2});
 const points = new THREE.Points(geometry, material);
 scene.add(points);
 
-camera.position.z = 15;
+camera.position.z = 200;
 
 //render the camera
 function animate (){
     requestAnimationFrame( animate );
 
     //animate the stuff
-
     points.rotation.x += 0.01;
     points.rotation.y += 0.01;
 
